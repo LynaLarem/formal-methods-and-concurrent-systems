@@ -1,0 +1,25 @@
+MODULE main
+VAR
+    fermier : boolean;
+    chou : boolean;
+    loup : boolean;
+    chevre : boolean;
+    bateau : {vide, chev, cho, lp};
+ASSIGN 
+    init(fermier) := FALSE;
+    init(chou) := FALSE;
+    init(chevre) := FALSE;
+    init(loup) := FALSE;
+    init(bateau) := vide;
+    next(fermier):= !fermier;
+    next(bateau):= ((fermier=chou)?cho : bateau) union
+                   ((fermier=chevre)?chev : bateau) union
+                   ((fermier=loup)?lp : bateau) union vide;
+    next(chevre):= (next(bateau)=chev)? ! chevre: chevre;
+    next(loup):= (next(bateau)=lp)? ! loup: loup;
+    next(chou):= (next(bateau)=cho)? ! chou: chevre;
+LTLSPEC ! ((((chou = chevre) | (loup = chevre)) -> fermier = chevre) U ((chevre & chou) & loup))
+ 
+
+       
+

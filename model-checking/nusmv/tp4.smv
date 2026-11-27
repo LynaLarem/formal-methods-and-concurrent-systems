@@ -1,0 +1,22 @@
+MODULE main
+VAR
+co : 0 .. 19;
+couleur : {Ro, Ve, Or};
+
+ASSIGN
+init(co) := 0 ;
+init(couleur) := Ro ;
+
+next(co) := (co + 1) mod 20;
+next(couleur) := case 
+   couleur = Ro & co=19 : Ve;
+   couleur = Ve & co=19 : Or;
+   couleur = Or & co=19 : Ro;
+   TRUE : couleur;
+   esac;
+
+LTLSPEC G(couleur = Ro -> X(couleur = Ro | couleur = Ve))
+SPEC AG(couleur = Ro -> AX(couleur = Ro | couleur = Ve))
+
+LTLSPEC G(couleur = Ro & co = 0) -> (couleur = rouge U (couleur = Ve & co = 0))
+LTLSPEC G(couleur = Ve -> X(couleur = Ro))

@@ -1,0 +1,18 @@
+MODULE counter
+ VAR
+  value : 0..3;
+ ASSIGN
+  init(value) := 0;
+  next(value) := (value + 1) mod 4;
+
+MODULE main
+ VAR
+  c1 : counter;
+  c2 : counter;
+
+ SPEC AG c1.value <= 3 -- Bornitude
+ SPEC EF c1.value = 3  -- Accessibilite
+ SPEC AG (c1.value = 3 -> AF c1.value = 0) -- Reinitialisation
+ LTLSPEC F G c1.value = 2 -- Stabilite
+ LTLSPEC G (c1.value = 0 -> X c1.value = 1) -- Comportement deterministe
+

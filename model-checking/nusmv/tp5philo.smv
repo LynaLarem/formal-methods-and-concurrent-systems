@@ -1,0 +1,41 @@
+MODULE main
+VAR
+    fourch1 : {prise, libre};
+    fourch2 : {prise, libre};
+
+    philo1 : philosophe(fourch1, fourch2);
+    philo2 : philosophe(fourch1, fourch2);
+
+ASSIGN 
+    init(fourch1) := libre;
+    init(fourch2) := libre;
+
+    next(fourch1) := case
+        philo1.etat = veut_mang & fourch1 = libre & philo2.etat != mange : prise;
+        philo1.etat = mange & next(philo1.etat) = pense : libre;
+        TRUE : fourch1;
+    esac;
+
+    next(fourch2) := case
+        philo2.etat = veut_mang & fourch2 = libre & philo1.etat != mange : prise;
+        philo2.etat = mange & next(philo2.etat) = pense : libre;
+        TRUE : fourch2;
+    esac;
+
+
+MODULE philosophe(f1, f2)
+VAR
+    etat : {pense, veut_mang, mange};
+
+ASSIGN
+    init(etat) := pense;
+
+    next(etat) := case 
+        etat = pense : veut_mang;
+        etat = veut_mang & f1 = libre & f2 = libre : mange;
+        etat = mange : pense;
+        TRUE : etat;
+    esac;
+FAIRNESS running
+-- SPEC AF ( philo1.etat = mange |philo2.etat = mange )
+-- SPEC AG ( EF (philo1.etat = mange |philo2.etat = mange ))

@@ -1,0 +1,44 @@
+MODULE main
+VAR
+-- torche ==0 ca veut dire qu'elle est sur le cote du depart
+    torche : boolean;
+    move : {a, b , c, d, ab, ac, ad, bc, bd, cd};
+    location : array 0..3 of boolean;
+    time : 0..100;
+ASSIGN 
+    init(torche) := FALSE;
+    init(location[0]) := FALSE;  init(location[1]) := FALSE;
+    init(location[2]) := FALSE;  init(location[3]) := FALSE;
+    init(time) := 0;
+    next(torche) := !torche;
+    next(move) := ((location[0] = torche)? a : move) union
+                  ((location[1] = torche)? b : move) union
+                  ((location[2] = torche)? c : move) union
+                  ((location[3] = torche)? d : move) union
+                  (((location[0] = location[1]) & (location[0] = torche))? ab : move) union
+                  (((location[0] = location[2]) & (location[0] = torche))? ac : move) union
+                  (((location[0] = location[3]) & (location[0] = torche))? ad : move) union
+
+                  (((location[1] = location[2]) & (location[1] = torche))? bc : move) union
+                  (((location[1] = location[3]) & (location[1] = torche))? bd : move) union
+                  (((location[2] = location[3]) & (location[3] = torche))? cd : move);
+             
+    next(time) := case 
+                  next(move)= a & time < 90 : time +1; 
+                  next(move)= b & time < 90 : time +2; 
+                  next(move)= c & time < 90 : time +5; 
+                  next(move)= d & time < 90 : time +10; 
+                  next(move)= ab & time < 90 : time +2; 
+                  next(move)= ac & time < 90 : time +5; 
+                  next(move)= ad & time < 90 : time +10; 
+                  next(move)= bc & time < 90 : time +5; 
+                  next(move)= bd & time < 90 : time +10; 
+                  next(move)= cd & time < 90 : time +10; 
+                  TRUE : time;   
+                  esac;
+    next(location[0]) := ((next(move) = a | next(move) = ab | next(move) = ac | next(move) = ad)? !location[0]: location[0]);     
+    next(location[1]) := ((next(move) = b | next(move) = ab| next(move) = bc | next(move) = bd )? !location[1]: location[1]);     
+    next(location[2]) := ((next(move) = c | next(move) = ac | next(move) = bc | next(move) = cd)? !location[2]: location[2]);   
+    next(location[3]) := ((next(move) = d | next(move) = ad | next(move) = bd | next(move) = cd)? !location[3]: location[3]);       
+                
+    SPEC !EF(location[0] & location[1] & location[2] & location[3] & time <= 17 )

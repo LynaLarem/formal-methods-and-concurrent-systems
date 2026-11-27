@@ -1,0 +1,23 @@
+.textfield:focused{
+    background-color: -fx-control-inner-background;
+    border-color: transparent;
+    border-radius: 3px;
+    -fx-background-color: white, -fx-control-inner-background;
+    -fx-border-color: -fx-text-box-border;
+    -fx-border-radius: 3px;
+    -fx-prompt-text-fill: -fx-text-inner-color;
+    -fx-text-fill: -fx-text-inner-color;
+    -fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);
+}
+
+.progress-bar > .bar {
+    -fx-accent: green;
+ }
+
+.hidden-column .column-header-background {
+    max-height: 0;
+    min-height: 0;
+    -fx-max-height: 0;
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+ }
